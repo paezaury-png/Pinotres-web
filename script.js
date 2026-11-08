@@ -1,0 +1,10 @@
+const menuButton=document.querySelector('.menu-toggle');
+const nav=document.querySelector('.nav');
+menuButton.addEventListener('click',()=>{const open=nav.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open));menuButton.textContent=open?'×':'☰'});
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menuButton.setAttribute('aria-expanded','false');menuButton.textContent='☰'}));
+document.getElementById('year').textContent=new Date().getFullYear();
+const form=document.getElementById('commentForm'),list=document.getElementById('commentsList'),count=document.getElementById('commentCount');
+function loadComments(){let items=[];try{items=JSON.parse(localStorage.getItem('pinotres-comments')||'[]')}catch(e){}count.textContent=`${items.length} ${items.length===1?'comentario':'comentarios'}`;if(!items.length){list.innerHTML='<div class="empty-comments"><span>✳</span><p>Este espacio también es tuyo.</p><small>Cuando compartas tu comentario, aparecerá aquí.</small></div>';return}list.innerHTML='';items.slice().reverse().forEach(item=>{const el=document.createElement('article');el.className='comment-item';const title=document.createElement('b');title.textContent=item.name;const type=document.createElement('small');type.textContent=item.type;const p=document.createElement('p');p.textContent=item.message;el.append(title,type,p);list.append(el)})}
+form.addEventListener('submit',e=>{e.preventDefault();const item={name:form.elements.namedItem('name').value.trim(),type:document.getElementById('commentType').value,message:document.getElementById('commentText').value.trim()};if(!item.name||!item.message)return;let items=[];try{items=JSON.parse(localStorage.getItem('pinotres-comments')||'[]')}catch(e){}items.push(item);localStorage.setItem('pinotres-comments',JSON.stringify(items.slice(-30)));form.reset();loadComments()});
+loadComments();
+// Add your Google Analytics 4 measurement ID here before launch, if analytics consent and privacy setup are in place.
